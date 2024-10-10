@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { container } from 'tsyringe';
+import { BaiVietController } from '../controllers/baivietController';
+import { UploadMultiService } from '../services/upload-multiService';
+import { BacSiController } from '../controllers/bacsiController';
+const bacsiRouter = Router();
+const uploadMultiService = container.resolve(UploadMultiService);
+const bacSiController = container.resolve(BacSiController);
+bacsiRouter.get('/getall', bacSiController.getBacSiAll.bind(bacSiController));
+bacsiRouter.post('/thembacsi',uploadMultiService.multerMultiUpload,bacSiController.createBacSi.bind(bacSiController));
+bacsiRouter.put('/suabacsi',uploadMultiService.multerMultiUpload,bacSiController.updateBacSi.bind(bacSiController));
+bacsiRouter.delete('/xoabacsi/:id',bacSiController.deleteBacSi.bind(bacSiController));
+bacsiRouter.get('/getbacsibyID/:id',bacSiController.getBacSiById.bind(bacSiController));
+// bacsiRouter.get('/getbaivietCM/:loai_bai_viet/:pageIndex/:pageSize',bacSiController.getBaiVietCM.bind(bacSiController));
+export default bacsiRouter;
