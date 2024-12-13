@@ -12,7 +12,11 @@ export class TrangThietBiService{
     }
     async updateTrangThietBi(trangthietbi:any):Promise<any>{
         return this.trangThietBiService.updateTrangThietBi(trangthietbi);
-    }async deleteTrangThietBi(id:any):Promise<any>{
+    }
+    async deleteTrangThietBi(id:any):Promise<any>{
         return this.trangThietBiService.deleteTrangThietBi(id);
+    }
+    async getTrangThietBiByID(id:any):Promise<any>{
+        return this.trangThietBiService.getTrangThietBiByID(id);
     }
 }

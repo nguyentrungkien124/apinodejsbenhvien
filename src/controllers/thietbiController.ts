@@ -62,4 +62,17 @@ export class TrangThietBiController{
             res.json({message:error.message,success:false});
         }
     }
+    async getTrangThietBiByID(req:Request,res:Response):Promise<void>{
+        try{
+            let id = req.params.id;
+            const trangthietbi = await this.trangThietBiService.getTrangThietBiByID(id);
+            if(trangthietbi){
+                res.json(trangthietbi);
+            }else{
+                res.json({message:'Bản ghi không tồn tại'});
+            }
+        }catch(error:any){
+            res.json({message:error.message});
+        }
+    }
 }

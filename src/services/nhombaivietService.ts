@@ -13,9 +13,10 @@ export class NhomBaiVietService{
     async updateNhomBaiViet(nhombaiviet:any):Promise<any>{
         return this.nhomBaiVietService.updateNhomBaiViet(nhombaiviet);
     }
-    async deleteNhomBaiViet(id:any):Promise<any>{
-        return this.nhomBaiVietService.deleteNhomBaiViet(id);
+    async deleteNhomBaiViet(id: any): Promise<any> {
+        return this.nhomBaiVietService.deleteNhomBaiViet(id);  // Gọi repository để thực hiện xóa
     }
+    
     async getNhomBaiVietByID(id:any):Promise<any>{
         return this.nhomBaiVietService.getNhomBaiVietByID(id);
     }

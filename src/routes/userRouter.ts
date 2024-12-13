@@ -6,5 +6,8 @@ const userRouter = Router();
 const userController = container.resolve(UserController);
 const uploadMultiService = container.resolve(UploadMultiService);
 userRouter.post('/create', uploadMultiService.multerMultiUpload, userController.createUser.bind(userController));
+userRouter.put('/update', uploadMultiService.multerMultiUpload, userController.updateUser.bind(userController));
 userRouter.post('/login', userController.authenticate.bind(userController));
+userRouter.get('/getthongtinbyId/:id',userController.getThongTinNguoiDungByID.bind(userController));
+userRouter.get('/getall',userController.GetAllNguoiDung.bind(userController));
 export default userRouter;

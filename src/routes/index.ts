@@ -14,6 +14,8 @@ import khoaRouter from './khoaRouter';
 import chuyenMonRouter from './chuyenmonRouter';
 import bacsiRouter from './bacsiRouter';
 import datLichRouter from './datlichRouter';
+import lichLamViecRouter from './lichlamviecRouter';
+import thongkeRouter from './thongkeRouter';
 
 const router = Router();
 router.use('/nhombaiviet',nhomBaiVietRouter)
@@ -29,4 +31,6 @@ router.use('/khoa',khoaRouter);
 router.use('/chuyenmon',chuyenMonRouter);
 router.use('/bacsi',bacsiRouter);
 router.use('/datlich',datLichRouter);
+router.use('/lichlamviec',lichLamViecRouter);
+router.use('/thongke',thongkeRouter);
 export default router;

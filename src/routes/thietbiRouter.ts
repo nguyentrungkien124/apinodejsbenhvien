@@ -9,4 +9,5 @@ trangThietBiRouter.get('/getall',trangThietBiController.getTrangThietBiAll.bind(
 trangThietBiRouter.post('/themtrangthietbi',uploadMultiService.multerMultiUpload,trangThietBiController.createTrangThietBi.bind(trangThietBiController));
 trangThietBiRouter.put('/suatrangthietbi',uploadMultiService.multerMultiUpload,trangThietBiController.updateTrangThietBi.bind(trangThietBiController));
 trangThietBiRouter.delete('/xoatrangthietbi/:id',trangThietBiController.deleteTrangThietBi.bind(trangThietBiController));
+trangThietBiRouter.get('/getTrangThietBi/:id',trangThietBiController.getTrangThietBiByID.bind(trangThietBiController));
 export default trangThietBiRouter;  

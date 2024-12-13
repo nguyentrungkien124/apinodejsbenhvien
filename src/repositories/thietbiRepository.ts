@@ -42,4 +42,13 @@ export class TrangThietBiRepository{
             throw new Error(error.message);
         }
     }
+    async getTrangThietBiByID(id:any):Promise<any>{
+        try{
+            const sql = 'CALL GetTrangThietBiByID(?)'
+            const [results] = await this.db.query(sql,[id])
+            return results;
+        }catch(error:any){
+            throw new Error(error.message)
+        }
+    }
 }

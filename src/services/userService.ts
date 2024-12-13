@@ -9,14 +9,23 @@ export class UserService {
   async createUser(user: any): Promise<any> {
     return this.userRepository.createUser(user);
   }
+  async updateUser(user: any): Promise<any> {
+    return this.userRepository.updateUser(user);
+  }
+  async getThongTinNguoiDungByID(id:any):Promise<any>{
+    return this.userRepository.getThongTinNguoiDungByID(id);
+  }
+  async GetAllNguoiDung():Promise<any>{
+    return this.userRepository.GetAllNguoiDung();
+}
 
-  async authenticate(username: string, password: string): Promise<any> {     
-    let user = await this.userRepository.GetUserByAccount(username, password);
+  async authenticate(email: string, mat_khau: string): Promise<any> {     
+    let user = await this.userRepository.GetUserByAccount(email, mat_khau);
     if (user) { 
       return {
-        user_id: user.user_id,
-        hoten: user.hoten,
-        username: user.username 
+        id: user.id,
+        ho_ten: user.ho_ten,
+        email: user.email 
       };
     }
     return null;

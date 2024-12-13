@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config(); // Tải các biến môi trường từ file .env
 
-export const sendEmail = async (to: string, subject: string, text: string) => {
+export const sendEmail = async (to: string, subject: string, text: string, html: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // Hoặc dịch vụ email bạn muốn sử dụng
         auth: {
@@ -13,10 +13,11 @@ export const sendEmail = async (to: string, subject: string, text: string) => {
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_USER, // Sử dụng địa chỉ email từ biến môi trường
-        to: to,
-        subject: subject,
-        text: text
+        from: process.env.EMAIL_USER, // Địa chỉ email của bạn
+        to: to,                       // Địa chỉ email người nhận
+        subject: subject,             // Chủ đề email
+        text: text,                   // Nội dung dạng text (dành cho client không hỗ trợ HTML)
+        html: html                    // Nội dung dạng HTML (nếu client hỗ trợ)
     };
 
     return transporter.sendMail(mailOptions);

@@ -13,7 +13,21 @@ export class DatLichService{
     async updateTrangThaiLichKham(datlich:any):Promise<any>{
         return this.datLichService.updateTrangThaiLichKham(datlich);
     }
+    async HuyPhieuKham(datlich:any):Promise<any>{
+        return this.datLichService.HuyPhieuKham(datlich);
+    }
+    async TuChoiKham(datlich:any):Promise<any>{
+        return this.datLichService.TuChoiKham(datlich);
+    }
     async getLichKhamByBacSi(bac_si_id:number,pageIndex:number,pageSize:number){
         return this.datLichService.getLichKhamByBacSi(bac_si_id,pageIndex,pageSize);
     }
+
+    async GetLichKhamByNguoiDung(nguoi_dung_id:number,pageIndex:number,pageSize:number){
+        return this.datLichService.GetLichKhamByNguoiDung(nguoi_dung_id,pageIndex,pageSize);
+    }
+    async getDoctorName(bacSiId: string): Promise<string | null> {
+        return this.datLichService.getDoctorName(bacSiId);
+    }
+    
 }

@@ -33,16 +33,19 @@ export class NhomBaiVietRepository{
             throw new Error(error.message)
         }
     }
-    async deleteNhomBaiViet(id:any):Promise<any>{
-        try{
+    async deleteNhomBaiViet(ids: any): Promise<any> {
+        try {
+            // Chuyển mảng ids thành chuỗi JSON
+            const jsonIds = JSON.stringify(ids);
+    
             const sql = 'CALL DeleteNhomBaiViet(?)';
-            await this.db.query(sql,[id]);
+            await this.db.query(sql, [jsonIds]);  // Gửi mảng JSON vào thủ tục
             return true;
-        }catch (error:any){
-            throw new Error(error.message)
+        } catch (error: any) {
+            throw new Error(error.message);
         }
-
     }
+    
     async getNhomBaiVietByID(id:any):Promise<any>{
         try{
             const sql = 'CALL GetNhomBaiVietById(?)';

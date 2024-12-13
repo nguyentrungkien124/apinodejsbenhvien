@@ -11,5 +11,9 @@ bacsiRouter.post('/thembacsi',uploadMultiService.multerMultiUpload,bacSiControll
 bacsiRouter.put('/suabacsi',uploadMultiService.multerMultiUpload,bacSiController.updateBacSi.bind(bacSiController));
 bacsiRouter.delete('/xoabacsi/:id',bacSiController.deleteBacSi.bind(bacSiController));
 bacsiRouter.get('/getbacsibyID/:id',bacSiController.getBacSiById.bind(bacSiController));
+bacsiRouter.get('/searchBacSiTheoKhoa/:khoa_id/:pageIndex/:pageSize',bacSiController.searchBacSiTheoKhoa.bind(bacSiController));
+bacsiRouter.put('/updateKhambenhVideo/:id', (req, res) => bacSiController.updateKhamBenhQuaVideo(req, res));
+bacsiRouter.get('/getBacSiQuaVideo', bacSiController.getBacSiQuaVideo.bind(bacSiController));
+bacsiRouter.post('/loginBacSi', bacSiController.DangNhapByBacSi.bind(bacSiController));
 // bacsiRouter.get('/getbaivietCM/:loai_bai_viet/:pageIndex/:pageSize',bacSiController.getBaiVietCM.bind(bacSiController));
 export default bacsiRouter;
