@@ -83,19 +83,32 @@ export class BacSiController {
                 chuyen_tri: string,
                 chuc_danh: string
             };
+    
+            // Nếu có file, upload lên Cloudinary
             if (Array.isArray(req.files)) {
                 const result = await cloudinary.uploader.upload(req.files[0].path);
                 bacsi.hinh_anh = result.secure_url;
             }
     
-         
-    
+            // Gọi service để cập nhật
             const results = await this.bacSiService.updateBacSi(bacsi);
-            res.json({ message: 'Đã sửa thành công bác sĩ' });
+    
+            // Phản hồi thành công
+            res.status(200).json({
+                success: true,
+                message: 'Đã sửa thành công bác sĩ',
+                data: results, // Trả về dữ liệu cập nhật (nếu cần)
+            });
         } catch (error: any) {
-            res.json({ message: error.message });
+            // Xử lý lỗi và trả về trạng thái HTTP phù hợp
+            res.status(500).json({
+                success: false,
+                message: 'Cập nhật thất bại',
+                error: error.message, // Trả về lỗi chi tiết (nếu cần)
+            });
         }
     }
+    
     
     async deleteBacSi(req: Request, res: Response): Promise<void> {
         try {

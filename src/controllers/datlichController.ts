@@ -1,13 +1,16 @@
-import { Request, Response } from 'express';
-import { injectable } from "tsyringe";
-import { DatLichService } from '../services/datlichService';
-import { sendEmail } from '../config/mailer';
-import { io } from '../app';
-@injectable()
-export class DatLichController {
-    constructor(private datLichService: DatLichService) { }
+    import { Request, Response } from 'express';
+    import { injectable } from "tsyringe";
+    import { DatLichService } from '../services/datlichService';
+    import { sendEmail } from '../config/mailer';
+    import { io } from '../app';
+    import axios from 'axios';
 
-    // Trong DatLichController
+    @injectable()
+    export class DatLichController {
+        constructor(private datLichService: DatLichService) { }
+
+        // Trong DatLichController
+        
     async createDatLich(req: Request, res: Response): Promise<void> {
         try {
             const datlich = req.body as {
@@ -33,9 +36,8 @@ export class DatLichController {
                 res.status(400).json({ message: 'Không tìm thấy email của người dùng.' });
                 return;
             }
-            console.log('bac_si_id nhận được:', datlich.bac_si_id);
 
-            // Lấy tên bác   sĩ
+            // Lấy tên bác sĩ
             const tenBacSi = await this.datLichService.getDoctorName(datlich.bac_si_id);
             if (!tenBacSi) {
                 res.status(400).json({ message: 'Không tìm thấy thông tin bác sĩ.' });
@@ -54,6 +56,17 @@ export class DatLichController {
             - Ghi chú: ${datlich.ghi_chu}
             Vui lòng đến đúng giờ để đảm bảo thời gian khám!
             `;
+
+            // Gửi thông báo qua Socket.IO đến bác sĩ
+            io.to(`doctor_${datlich.bac_si_id}`).emit('new_appointment', {
+                message: 'Bạn có lịch hẹn mới',
+                data: {
+                    nguoi_dung_id: datlich.nguoi_dung_id,
+                    ngay_hen: datlich.ngay_hen,
+                    ca_dat: datlich.ca_dat,
+                    ghi_chu: datlich.ghi_chu,
+                },
+            });
 
             const html = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
@@ -75,8 +88,7 @@ export class DatLichController {
 
             await sendEmail(emailTo, subject, text, html);
 
-
-            // Phát sự kiện thời gian thực qua Socket.IO
+            // Phát sự kiện thời gian thực qua Socket.IO cho tất cả người dùng (client)
             io.emit('appointment_booked', {
                 nguoi_dung_id: datlich.nguoi_dung_id,
                 bac_si_id: datlich.bac_si_id,
@@ -85,7 +97,12 @@ export class DatLichController {
                 trang_thai: datlich.trang_thai
             });
 
+            // Gọi API phieu-kham để gửi thông báo cho bác sĩ
+            await axios.post('http://localhost:9999/api/phieu-kham', {
+                bac_si_id: datlich.bac_si_id
+            });
 
+            // Phản hồi thành công
             res.json({ message: 'Đã thêm đặt lịch thành công và gửi email xác nhận.' });
         } catch (error: any) {
             console.error('Error in createDatLich:', error);
@@ -129,7 +146,7 @@ export class DatLichController {
             res.json({ message: error.message });
         }
     }
-    
+
     async TuChoiKham(req: Request, res: Response): Promise<void> {
         try {
             const datlich = req.body as { id: string, ly_do: string };
