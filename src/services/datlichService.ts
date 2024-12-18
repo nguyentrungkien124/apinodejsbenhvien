@@ -29,5 +29,14 @@ export class DatLichService{
     async getDoctorName(bacSiId: string): Promise<string | null> {
         return this.datLichService.getDoctorName(bacSiId);
     }
-    
+    async createJitsiMeetLink(appointment_id: number): Promise<{ link: string, email: string } | null> {
+        return this.datLichService.createJitsiMeetLink(appointment_id);
+    }
+    async getNguoiDungIdByAppointmentId(appointmentId: number): Promise<number | null> {
+        return this.datLichService.getNguoiDungIdByAppointmentId(appointmentId);
+    }
+   
+    async updateJitsiMeetLink(appointmentId: number, jitsiMeetUrl: string): Promise<void> {
+        return this.datLichService.updateJitsiMeetLink(appointmentId, jitsiMeetUrl);
+    }
 }

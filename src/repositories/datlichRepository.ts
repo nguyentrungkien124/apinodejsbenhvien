@@ -96,5 +96,39 @@ export class DatLichRepository {
             throw new Error(error.message);
         }
     }
+
+     // Phương thức để tạo link Jitsi Meet
+     async createJitsiMeetLink(appointment_id: number): Promise<{ link: string, email: string } | null> {
+        try {
+            const sql = 'CALL CreateJitsiMeetLink(?)';
+            const [results] = await this.db.query(sql, [appointment_id]);
+
+            // Kiểm tra kết quả
+            if (results.length > 0) {
+                return results[0][0]; // Trả về kết quả từ thủ tục
+            }
+            return null;
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
+    }
+    async updateJitsiMeetLink(appointmentId: number, jitsiMeetUrl: string): Promise<void> {
+        try {
+            const sql = 'UPDATE dat_lich SET jitsi_url = ? WHERE id = ?';
+            await this.db.query(sql, [jitsiMeetUrl, appointmentId]);
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
+    }
+    async getNguoiDungIdByAppointmentId(appointmentId: number): Promise<number | null> {
+        try {
+            const sql = 'SELECT nguoi_dung_id FROM dat_lich WHERE id = ?';
+            const result = await this.db.query(sql, [appointmentId]);
+            return result[0]?.nguoi_dung_id || null; // Return nguoi_dung_id if exists
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
+    }
+
     
 }

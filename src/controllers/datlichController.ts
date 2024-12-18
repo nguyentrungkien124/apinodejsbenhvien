@@ -110,6 +110,71 @@
         }
     }
 
+
+    async createJitsiMeetLink(req: Request, res: Response): Promise<void> {
+        try {
+            const { appointment_id } = req.body;
+    
+            if (!appointment_id) {
+                res.status(400).json({ message: 'appointment_id is required' });
+                return;
+            }
+    
+            // Lấy nguoi_dung_id từ phiếu hẹn
+            const nguoi_dung_id = await this.datLichService.getNguoiDungIdByAppointmentId(appointment_id);
+    
+            if (!nguoi_dung_id) {
+                res.status(404).json({ message: 'Không tìm thấy phiếu hẹn.' });
+                return;
+            }
+    
+            // Tạo link Jitsi Meet với appointment_id
+            const jitsiMeetUrl = `https://meet.jit.si/room_${appointment_id}`;
+    
+            // Lấy email của khách hàng từ bảng nguoi_dung
+            const customerEmail = await this.datLichService.getUserEmail(nguoi_dung_id);
+            if (!customerEmail) {
+                res.status(404).json({ message: 'Không tìm thấy email của khách hàng.' });
+                return;
+            }
+    
+            // Cập nhật link Jitsi Meet vào cột jitsi_url trong bảng dat_lich
+            await this.datLichService.updateJitsiMeetLink(appointment_id, jitsiMeetUrl);
+    
+            // Gửi email xác nhận cho khách hàng
+            const subject = 'Phòng họp Jitsi Meet cho lịch khám của bạn';
+            const text = `Chào bạn,
+    
+    Bạn có thể tham gia phòng họp trực tuyến qua Jitsi Meet tại liên kết sau:
+    ${jitsiMeetUrl}
+    
+    Vui lòng tham gia đúng giờ.`;
+    
+            const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <h2 style="color: #4CAF50; text-align: center;">Phòng họp Jitsi Meet cho lịch khám của bạn</h2>
+                <p>Chào bạn,</p>
+                <p>Vui lòng tham gia phòng họp trực tuyến qua Jitsi Meet tại liên kết dưới đây:</p>
+                <p><a href="${jitsiMeetUrl}" target="_blank">${jitsiMeetUrl}</a></p>
+                <p style="color: red; font-weight: bold;">Vui lòng tham gia đúng giờ để đảm bảo thời gian khám!</p>
+            </div>
+            `;
+    
+            // Gửi email cho khách hàng
+            await sendEmail(customerEmail, subject, text, html);
+    
+            // Phản hồi thành công
+            res.json({
+                message: 'Đã tạo phòng họp Jitsi Meet và gửi email xác nhận.',
+                link: jitsiMeetUrl,
+                email: customerEmail
+            });
+        } catch (error: any) {
+            console.error('Error in createJitsiMeetLink:', error);
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
     // async testEmail(req: Request, res: Response): Promise<void> {
     //     try {
     //         await sendEmail('kiennro38@gmail.com', 'Test Subject', 'This is a test email.');

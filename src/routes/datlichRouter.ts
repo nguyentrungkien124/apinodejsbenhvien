@@ -12,4 +12,5 @@ datLichRouter.put('/tuchoikham',datLichController.TuChoiKham.bind(datLichControl
 datLichRouter.post('/HuyPhieuKham',datLichController.HuyPhieuKham.bind(datLichController));
 datLichRouter.get('/getLichKhamByBacSi/:bac_si_id/:pageIndex/:pageSize',datLichController.getLichKhamByBacSi.bind(datLichController));
 datLichRouter.get('/getLichKhamByNguoiDung/:nguoi_dung_id/:pageIndex/:pageSize',datLichController.GetLichKhamByNguoiDung.bind(datLichController));
+datLichRouter.post('/createphong',datLichController.createJitsiMeetLink.bind(datLichController));
 export default datLichRouter;

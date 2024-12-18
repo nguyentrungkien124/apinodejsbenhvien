@@ -16,6 +16,7 @@ import bacsiRouter from './bacsiRouter';
 import datLichRouter from './datlichRouter';
 import lichLamViecRouter from './lichlamviecRouter';
 import thongkeRouter from './thongkeRouter';
+import danhGiaRouter from './danhgiaRouter';
 
 const router = Router();
 router.use('/nhombaiviet',nhomBaiVietRouter)
@@ -33,4 +34,5 @@ router.use('/bacsi',bacsiRouter);
 router.use('/datlich',datLichRouter);
 router.use('/lichlamviec',lichLamViecRouter);
 router.use('/thongke',thongkeRouter);
+router.use('/danhgia',danhGiaRouter);
 export default router;
