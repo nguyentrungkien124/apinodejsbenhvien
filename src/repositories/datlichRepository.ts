@@ -9,6 +9,7 @@ export class DatLichRepository {
     async createDatLich(datlich: any): Promise<any> {
         try {
             const sql = 'CALL CreateDatLich(?,?,?,?,?,?,?,?,?,?,?)';
+            const [rels] =
             await this.db.query(sql, [
                 datlich.nguoi_dung_id,
                 datlich.bac_si_id,
@@ -22,7 +23,8 @@ export class DatLichRepository {
                 datlich.gia,
                 datlich.ly_do
             ]);
-            return true;
+            return rels[0];
+
         } catch (error: any) {
             throw new Error(error.message);
         }
@@ -34,6 +36,18 @@ export class DatLichRepository {
             const sql = 'CALL UpdateTrangThaiLichKham(?)'
             await this.db.query(sql,[
                 datlich.id
+            ]);
+            return true;
+        }catch(error:any){
+            throw new Error(error.message)
+        }
+    }   
+    
+    async UpdateDaThanhToan(datlich:any):Promise<any>{
+        try{
+            const sql = 'CALL UpdateDaThanhToan(?)'
+            await this.db.query(sql,[
+                datlich.orderId
             ]);
             return true;
         }catch(error:any){

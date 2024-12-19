@@ -13,6 +13,9 @@ export class DatLichService{
     async updateTrangThaiLichKham(datlich:any):Promise<any>{
         return this.datLichService.updateTrangThaiLichKham(datlich);
     }
+    async UpdateDaThanhToan(datlich:any):Promise<any>{
+        return this.datLichService.UpdateDaThanhToan(datlich);
+    }
     async HuyPhieuKham(datlich:any):Promise<any>{
         return this.datLichService.HuyPhieuKham(datlich);
     }

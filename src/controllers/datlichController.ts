@@ -28,6 +28,7 @@
             };
 
             // Gọi dịch vụ để tạo lịch
+            const rels =
             await this.datLichService.createDatLich(datlich);
 
             // Lấy email của người dùng
@@ -103,7 +104,7 @@
             });
 
             // Phản hồi thành công
-            res.json({ message: 'Đã thêm đặt lịch thành công và gửi email xác nhận.' });
+            res.json({ message: 'Đã thêm đặt lịch thành công và gửi email xác nhận.',message1:rels });
         } catch (error: any) {
             console.error('Error in createDatLich:', error);
             res.status(500).json({ message: error.message });
@@ -195,6 +196,17 @@
             res.json({ message: error.message });
         }
     }
+    async UpdateDaThanhToan(req: Request, res: Response): Promise<void> {
+        try {
+            let datlich = req.body as { orderId: string };
+            const results = await this.datLichService.UpdateDaThanhToan(datlich);
+            res.json({ message: 'Đã sửa thành công trạng thái đã thanh toán' });
+           
+        } catch (error: any) {
+            res.json({ message: error.message });
+        }
+    }
+
 
     async HuyPhieuKham(req: Request, res: Response): Promise<void> {
         try {

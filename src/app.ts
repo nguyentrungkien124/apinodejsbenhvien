@@ -72,32 +72,31 @@ app.post('/api/phieu-kham', (req, res) => {
   // Trả về phản hồi thành công
   res.status(200).json({ message: 'Thông báo đã được gửi' });
 });
-
 app.post('/api/payment', async (req, res) => {
-  const { amount, orderInfo } = req.body; // Lấy dữ liệu từ client
+  const bookingData = req.body; // Lấy dữ liệu từ client
 
   // Kiểm tra và xử lý amount để chuyển về số nguyên
-  if (!amount || isNaN(amount)) {
+  if (!bookingData.gia || isNaN(bookingData.gia)) {
     return res.status(400).json({ message: "Số tiền không hợp lệ" });
   }
 
   // Loại bỏ phần thập phân nếu có và chuyển thành số nguyên
-  const formattedAmount = parseInt(parseFloat(amount).toFixed(0), 10);
+  const formattedAmount = parseInt(parseFloat(bookingData.gia).toFixed(0), 10);
 
   if (formattedAmount < 1000) { // Đảm bảo số tiền tối thiểu là 1.000 đồng
     return res.status(400).json({ message: "Số tiền phải lớn hơn hoặc bằng 1.000 đồng" });
   }
 
   // Các biến khác
-  var accessKey = 'F8BBA842ECF85';
-  var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-  var partnerCode = 'MOMO';
-  var redirectUrl = 'http://localhost:3000';
-  var ipnUrl = 'https://430d-42-117-49-132.ngrok-free.app/callback';
-  var requestType = "payWithMethod";
-  var orderId = partnerCode + new Date().getTime();
-  var requestId = orderId;
-  var extraData = '';
+  const accessKey = 'F8BBA842ECF85';
+  const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
+  const partnerCode = 'MOMO';
+  const redirectUrl = 'http://localhost:3000/Thanhcong';
+  const ipnUrl = 'https://d334-113-160-132-169.ngrok-free.app/callback';
+  const requestType = "payWithMethod";
+  const requestId = bookingData.orderId || partnerCode + new Date().getTime(); // Sử dụng orderId từ client
+  const  orderInfo='pay with MoMo'
+  var extraData = JSON.stringify(bookingData);
   var autoCapture = true;
   var lang = 'vi';
 
@@ -106,8 +105,9 @@ app.post('/api/payment', async (req, res) => {
     "&amount=" + formattedAmount +
     "&extraData=" + extraData +
     "&ipnUrl=" + ipnUrl +
-    "&orderId=" + orderId +
-    "&orderInfo=" + orderInfo +
+    "&orderId=" + requestId + // Sử dụng requestId làm orderId
+    '&orderInfo=' +
+    orderInfo +
     "&partnerCode=" + partnerCode +
     "&redirectUrl=" + redirectUrl +
     "&requestId=" + requestId +
@@ -125,11 +125,12 @@ app.post('/api/payment', async (req, res) => {
     storeId: "MomoTestStore",
     requestId,
     amount: formattedAmount, // Số tiền đã chuẩn hóa
-    orderId,
-    orderInfo,
+    orderId: requestId,
+    orderInfo: 'pay with MoMo', // Sử dụng requestId làm orderId
     redirectUrl,
     ipnUrl,
     lang,
+  
     requestType,
     autoCapture,
     extraData,
@@ -162,15 +163,34 @@ app.post('/api/payment', async (req, res) => {
 
 
 app.post('/callback', async (req, res) => {
+  try {
+    // Dữ liệu callback từ MoMo
+    const { orderId, extraData } = req.body; // `extraData` chứa dữ liệu đặt lịch (JSON)
 
-  console.log('callback: ');
-  console.log(req.body);
+    // Bước 1: Thêm dữ liệu đặt lịch
+    const addResponse = await axios.post('http://localhost:9999/api/datlich/them', JSON.parse(extraData));
+    console.log('Thêm dữ liệu đặt lịch:', addResponse.data.message1.id);
+    const id ={orderId:addResponse.data.message1.id}
+ 
+    if (addResponse.status === 200) {
+      const updateResponse = await axios.put('http://localhost:9999/api/datlich/updateDaThanhToan', 
+        id 
+      );
+      console.log('Cập nhật trạng thái:', orderId);
 
-  return res.status(204).json(req.body);
+      return res.status(200).json({ message: "Thành công", data: updateResponse.data });
+    } else {
+      return res.status(400).json({ message: "Không thể thêm dữ liệu đặt lịch" });
+    }
+  } catch (error:any) {
+    console.error('Error in callback:', error.message);
+    return res.status(500).json({ message: "Lỗi server khi xử lý callback" });
+  }
 });
 
 app.post('/check-status-transaction', async (req, res) => {
   const { orderId } = req.body;
+  
 
   // const signature = accessKey=$accessKey&orderId=$orderId&partnerCode=$partnerCode
   // &requestId=$requestId
