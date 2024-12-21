@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
   // Xử lý sự kiện bác sĩ đăng nhập và tham gia room
  socket.on('join_room', (data) => {
   const { bac_si_id } = data;
+  
   console.log(`Doctor ${bac_si_id} joined room`);
   doctorSockets[bac_si_id] = socket.id;
   socket.join(`doctor_${bac_si_id}`);
@@ -92,7 +93,7 @@ app.post('/api/payment', async (req, res) => {
   const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
   const partnerCode = 'MOMO';
   const redirectUrl = 'http://localhost:3000/Thanhcong';
-  const ipnUrl = 'https://d334-113-160-132-169.ngrok-free.app/callback';
+  const ipnUrl = 'https://d53d-2405-4802-67c-8790-4452-a6b5-3302-1621.ngrok-free.app/callback';
   const requestType = "payWithMethod";
   const requestId = bookingData.orderId || partnerCode + new Date().getTime(); // Sử dụng orderId từ client
   const  orderInfo='pay with MoMo'
